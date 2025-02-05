@@ -61,7 +61,9 @@ class _ObservingCodec(Codec):
         self._observers = tuple(observers)
 
     def encode(self, buf: Buffer) -> Buffer:
-        observers = [observer.encode(self._codec, buf) for observer in self._observers]
+        observers = [
+            observer.observe_encode(self._codec, buf) for observer in self._observers
+        ]
 
         encoded: Buffer = self._codec.encode(buf)  # type: ignore
 
@@ -72,7 +74,8 @@ class _ObservingCodec(Codec):
 
     def decode(self, buf: Buffer, out: Optional[Buffer] = None) -> Buffer:
         observers = [
-            observer.decode(self._codec, buf, out=out) for observer in self._observers
+            observer.observe_decode(self._codec, buf, out=out)
+            for observer in self._observers
         ]
 
         decoded: Buffer = self._codec.decode(buf, out=out)  # type: ignore

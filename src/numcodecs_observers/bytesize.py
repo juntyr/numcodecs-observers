@@ -63,9 +63,7 @@ class BytesizeObserver(CodecObserver):
 
         return MappingProxyType(self._decode_sizes)
 
-    def encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
-        """ """
-
+    def observe_encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
         def post_encode(encoded: Buffer) -> None:
             buf_, encoded_ = np.asarray(buf), np.asarray(encoded)
 
@@ -75,11 +73,9 @@ class BytesizeObserver(CodecObserver):
 
         return post_encode
 
-    def decode(
+    def observe_decode(
         self, codec: Codec, buf: Buffer, out: Optional[Buffer] = None
     ) -> Callable[[Buffer], None]:
-        """ """
-
         def post_decode(decoded: Buffer) -> None:
             buf_, decoded_ = np.asarray(buf), np.asarray(decoded)
 

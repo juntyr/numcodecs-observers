@@ -50,9 +50,7 @@ class WalltimeObserver(CodecObserver):
 
         return MappingProxyType(self._decode_times)
 
-    def encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
-        """ """
-
+    def observe_encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
         encode_start = time.perf_counter()
 
         def post_encode(encoded: Buffer) -> None:
@@ -62,11 +60,9 @@ class WalltimeObserver(CodecObserver):
 
         return post_encode
 
-    def decode(
+    def observe_decode(
         self, codec: Codec, buf: Buffer, out: Optional[Buffer] = None
     ) -> Callable[[Buffer], None]:
-        """ """
-
         decode_start = time.perf_counter()
 
         def post_decode(decoded: Buffer) -> None:
