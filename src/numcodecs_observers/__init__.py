@@ -5,10 +5,10 @@ compression API.
 The following observers, implementing the
 [`CodecObserver`][numcodecs_observers.abc.CodecObserver] class are provided:
 
-- [`ByesizeObserver`][numcodecs_observers.bytesize.ByesizeObserver]: measure
+- [`BytesizeObserver`][numcodecs_observers.bytesize.BytesizeObserver]: measure
   the byte size of the data before and after encoding / decoding
 - [`WalltimeObserver`][numcodecs_observers.walltime.WalltimeObserver]: measure
-  the walltime taken to encode / decode
+  the walltime it takes to encode / decode
 """
 
 __all__ = ["observe"]

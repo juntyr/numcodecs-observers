@@ -1,3 +1,9 @@
+"""
+This module defines the [`HashableCodec`][numcodecs_observers.hash.HashableCodec] helper class, which wraps an existing [`Codec`][numcodecs.abc.Codec] and makes it [`hash`][hash]able.
+"""
+
+__all__ = ["HashableCodec"]
+
 from collections.abc import Buffer
 from typing import Any, Optional
 
@@ -5,7 +11,16 @@ from numcodecs.abc import Codec
 
 
 class HashableCodec(Codec):
+    """
+    Helper class to wrap an existing [`Codec`][numcodecs.abc.Codec] and make
+    it [`hash`][hash]able.
+
+    This class overrides the [`__hash__`][object.__hash__] and
+    [`__eq__`][object.__eq__] methods to use the codec instance's [`id`][id].
+    """
+
     codec: Codec
+    """ The wrapped codec. """
 
     def __init__(self, codec: Codec):
         self.codec = codec

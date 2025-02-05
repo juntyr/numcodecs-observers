@@ -1,3 +1,9 @@
+"""
+This module defines the [`WalltimeObserver`][numcodecs_observers.walltime.WalltimeObserver] class, which measures the walltime it takes to encode / decode.
+"""
+
+__all__ = ["WalltimeObserver"]
+
 import time
 from collections import defaultdict
 from collections.abc import Buffer, Mapping
@@ -11,6 +17,16 @@ from .hash import HashableCodec
 
 
 class WalltimeObserver(CodecObserver):
+    """
+    Observer that measures the walltime it takes to encode / decode.
+
+    The list of measurements are exposed in the
+    [`encode_times`][numcodecs_observers.walltime.WalltimeObserver.encode_times]
+    and
+    [`decode_times`][numcodecs_observers.walltime.WalltimeObserver.decode_times]
+    properties.
+    """
+
     _encode_times: defaultdict[HashableCodec, list[float]]
     _decode_times: defaultdict[HashableCodec, list[float]]
 
@@ -20,13 +36,23 @@ class WalltimeObserver(CodecObserver):
 
     @property
     def encode_times(self) -> Mapping[HashableCodec, list[float]]:
+        """
+        Per-codec-instance measurements of the walltime it takes to encode.
+        """
+
         return MappingProxyType(self._encode_times)
 
     @property
     def decode_times(self) -> Mapping[HashableCodec, list[float]]:
+        """
+        Per-codec-instance measurements of the walltime it takes to decode.
+        """
+
         return MappingProxyType(self._decode_times)
 
     def encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
+        """ """
+
         encode_start = time.perf_counter()
 
         def post_encode(encoded: Buffer) -> None:
@@ -39,6 +65,8 @@ class WalltimeObserver(CodecObserver):
     def decode(
         self, codec: Codec, buf: Buffer, out: Optional[Buffer] = None
     ) -> Callable[[Buffer], None]:
+        """ """
+
         decode_start = time.perf_counter()
 
         def post_decode(decoded: Buffer) -> None:

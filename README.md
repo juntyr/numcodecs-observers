@@ -10,8 +10,8 @@ Observe encoding and decoding in the [`numcodecs`] buffer compression API.
 
 The following observers, implementing the `CodecObserver` class are provided:
 
-- `ByesizeObserver`: measure the byte size of the data before and after encoding / decoding
-- `WalltimeObserver`: measure the walltime taken to encode / decode
+- `BytesizeObserver`: measure the byte size of the data before and after encoding / decoding
+- `WalltimeObserver`: measure the walltime it takes to encode / decode
 
 [`numcodecs`]: https://numcodecs.readthedocs.io/en/stable/
 

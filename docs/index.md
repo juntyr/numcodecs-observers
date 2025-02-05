@@ -10,8 +10,8 @@ Observe encoding and decoding in the [`numcodecs`][numcodecs] buffer compression
 
 The following observers, implementing the [`CodecObserver`][numcodecs_observers.abc.CodecObserver] class are provided:
 
-- [`ByesizeObserver`][numcodecs_observers.bytesize.ByesizeObserver]: measure the byte size of the data before and after encoding / decoding
-- [`WalltimeObserver`][numcodecs_observers.walltime.WalltimeObserver]: measure the walltime taken to encode / decode
+- [`BytesizeObserver`][numcodecs_observers.bytesize.BytesizeObserver]: measure the byte size of the data before and after encoding / decoding
+- [`WalltimeObserver`][numcodecs_observers.walltime.WalltimeObserver]: measure the walltime it takes to encode / decode
 
 ## Funding
 

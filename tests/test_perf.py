@@ -5,7 +5,7 @@ import numpy as np
 
 
 def test_perf():
-    nbytes = numcodecs_observers.bytesize.ByesizeObserver()
+    nbytes = numcodecs_observers.bytesize.BytesizeObserver()
     timing = numcodecs_observers.walltime.WalltimeObserver()
 
     stack = numcodecs_combinators.stack.CodecStack(
