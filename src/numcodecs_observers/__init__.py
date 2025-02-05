@@ -65,7 +65,7 @@ class _ObservingCodec(Codec):
 
         encoded: Buffer = self._codec.encode(buf)  # type: ignore
 
-        for observer in observers:
+        for observer in reversed(observers):
             observer(encoded)
 
         return encoded
@@ -77,7 +77,7 @@ class _ObservingCodec(Codec):
 
         decoded: Buffer = self._codec.decode(buf, out=out)  # type: ignore
 
-        for observer in observers:
+        for observer in reversed(observers):
             observer(decoded)
 
         return decoded
