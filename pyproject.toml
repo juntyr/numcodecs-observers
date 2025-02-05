@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "numcodecs-observers"
+version = "0.1.0"
+description = "Observe encoding and decoding in the `numcodecs` buffer compression API"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+dependencies = [
+    "numcodecs~=0.13",
+    "numcodecs-combinators~=0.2.1",
+    "numpy~=2.2",
+]
+
+[dependency-groups]
+dev = ["mypy~=1.14", "pytest~=8.3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"climatebenchpress.compressor" = ["py.typed"]
+
+[[tool.mypy.overrides]]
+module = ["numcodecs.*"]
+follow_untyped_imports = true
