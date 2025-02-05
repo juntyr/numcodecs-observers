@@ -61,24 +61,24 @@ class _ObservingCodec(Codec):
         self._observers = tuple(observers)
 
     def encode(self, buf: Buffer) -> Buffer:
-        for observer in self._observers:
-            observer.pre_encode(self._codec, buf)
+        observers = [observer.encode(self._codec, buf) for observer in self._observers]
 
         encoded: Buffer = self._codec.encode(buf)  # type: ignore
 
-        for observer in self._observers:
-            observer.post_encode(self._codec, buf, encoded)
+        for observer in observers:
+            observer(encoded)
 
         return encoded
 
     def decode(self, buf: Buffer, out: Optional[Buffer] = None) -> Buffer:
-        for observer in self._observers:
-            observer.pre_decode(self._codec, buf, out=out)
+        observers = [
+            observer.decode(self._codec, buf, out=out) for observer in self._observers
+        ]
 
         decoded: Buffer = self._codec.decode(buf, out=out)  # type: ignore
 
-        for observer in self._observers:
-            observer.post_decode(self._codec, buf, decoded)
+        for observer in observers:
+            observer(decoded)
 
         return decoded
 

@@ -2,25 +2,19 @@ __all__ = ["CodecObserver"]
 
 from abc import ABC, abstractmethod
 from collections.abc import Buffer
-from typing import Optional
+from typing import Optional, Callable
 
 from numcodecs.abc import Codec
 
 
 class CodecObserver(ABC):
-    def pre_encode(self, codec: Codec, buf: Buffer) -> None:
-        pass
+    def encode(self, codec: Codec, buf: Buffer) -> Callable[[Buffer], None]:
+        return lambda encoded: None
 
-    def post_encode(self, codec: Codec, buf: Buffer, encoded: Buffer) -> None:
-        pass
-
-    def pre_decode(
+    def decode(
         self, codec: Codec, buf: Buffer, out: Optional[Buffer] = None
-    ) -> None:
-        pass
-
-    def post_decode(self, codec: Codec, buf: Buffer, decoded: Buffer) -> None:
-        pass
+    ) -> Callable[[Buffer], None]:
+        return lambda decoded: None
 
     @abstractmethod
     def results(self) -> dict:

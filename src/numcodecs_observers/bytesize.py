@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections.abc import Buffer
 from dataclasses import dataclass
+from typing import Callable, Optional
 
 import numpy as np
 from numcodecs.abc import Codec
@@ -24,21 +25,29 @@ class ByesizeObserver(CodecObserver):
         self.encode_sizes = defaultdict(list)
         self.decode_sizes = defaultdict(list)
 
-    def post_encode(self, codec: Codec, buf: Buffer, encoded: Buffer) -> None:
-        buf, encoded = np.asarray(buf), np.asarray(encoded)
+    def encode(self, codec: Codec, buf_: Buffer) -> Callable[[Buffer], None]:
+        def post_encode(encoded: Buffer) -> None:
+            buf, encoded = np.asarray(buf_), np.asarray(encoded)
 
-        self.encode_sizes[id(codec)].append(
-            Bytesize(pre=buf.nbytes, post=encoded.nbytes)
-        )
-        self.codecs[id(codec)] = codec
+            self.encode_sizes[id(codec)].append(
+                Bytesize(pre=buf.nbytes, post=encoded.nbytes)
+            )
+            self.codecs[id(codec)] = codec
 
-    def post_decode(self, codec: Codec, buf: Buffer, decoded: Buffer) -> None:
-        buf, decoded = np.asarray(buf), np.asarray(decoded)
+        return post_encode
 
-        self.decode_sizes[id(codec)].append(
-            Bytesize(pre=buf.nbytes, post=decoded.nbytes)
-        )
-        self.codecs[id(codec)] = codec
+    def decode(
+        self, codec: Codec, buf_: Buffer, out: Optional[Buffer] = None
+    ) -> Callable[[Buffer], None]:
+        def post_decode(decoded: Buffer) -> None:
+            buf, decoded = np.asarray(buf_), np.asarray(decoded)
+
+            self.decode_sizes[id(codec)].append(
+                Bytesize(pre=buf.nbytes, post=decoded.nbytes)
+            )
+            self.codecs[id(codec)] = codec
+
+        return post_decode
 
     def results(self) -> dict:
         return dict(
