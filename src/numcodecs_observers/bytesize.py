@@ -5,9 +5,10 @@ This module defines the [`BytesizeObserver`][numcodecs_observers.bytesize.Bytesi
 __all__ = ["Bytesize", "BytesizeObserver"]
 
 from collections import defaultdict
-from collections.abc import Buffer, Mapping
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Callable, Optional
+from typing_extensions import Buffer  # MSPV 3.12
 from types import MappingProxyType
 
 import numpy as np

@@ -13,12 +13,14 @@ The following observers, implementing the
 
 __all__ = ["observe"]
 
-from collections.abc import Buffer, Sequence
+from collections.abc import Sequence
 from contextlib import contextmanager
-from typing import Any, Optional
+from typing import Any, Optional, Callable
+from typing_extensions import Buffer  # MSPV 3.12
 
 import numcodecs_combinators
 from numcodecs.abc import Codec
+from numcodecs_combinators.abc import CodecCombinatorMixin
 
 from . import abc as abc
 from . import bytesize as bytesize
@@ -52,7 +54,7 @@ def observe(codec: Codec, observers: Sequence[abc.CodecObserver]):
     )
 
 
-class _ObservingCodec(Codec):
+class _ObservingCodec(Codec, CodecCombinatorMixin):
     _codec: Codec
     _observers: tuple[abc.CodecObserver, ...]
 
@@ -84,6 +86,9 @@ class _ObservingCodec(Codec):
             observer(decoded)
 
         return decoded
+
+    def map(self, mapper: Callable[[Codec], Codec]) -> "_ObservingCodec":
+        return _ObservingCodec(mapper(self._codec), self._observers)
 
     def __getattr__(self, name: str) -> Any:
         return getattr(self._codec, name)

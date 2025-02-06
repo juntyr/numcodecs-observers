@@ -4,13 +4,14 @@ This module defines the [`HashableCodec`][numcodecs_observers.hash.HashableCodec
 
 __all__ = ["HashableCodec"]
 
-from collections.abc import Buffer
-from typing import Any, Optional
+from typing import Any, Optional, Callable
+from typing_extensions import Buffer  # MSPV 3.12
 
 from numcodecs.abc import Codec
+from numcodecs_combinators.abc import CodecCombinatorMixin
 
 
-class HashableCodec(Codec):
+class HashableCodec(Codec, CodecCombinatorMixin):
     """
     Helper class to wrap an existing [`Codec`][numcodecs.abc.Codec] and make
     it [`hash`][hash]able.
@@ -30,6 +31,11 @@ class HashableCodec(Codec):
 
     def decode(self, buf: Buffer, out: Optional[Buffer] = None) -> Buffer:
         return self.codec.decode(buf, out=out)
+
+    def map(self, mapper: Callable[[Codec], Codec]) -> Codec:
+        # Explicitly don't wrap the mapped inner codec with HashableCodec, as
+        #  HashableCodec should only be applied manually at the top-level
+        return mapper(self.codec)
 
     def __hash__(self) -> int:
         return id(self.codec)

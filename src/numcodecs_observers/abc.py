@@ -4,8 +4,8 @@ This module defines the [`CodecObserver`][numcodecs_observers.abc.CodecObserver]
 
 __all__ = ["CodecObserver"]
 
-from collections.abc import Buffer
 from typing import Optional, Callable
+from typing_extensions import Buffer  # MSPV 3.12
 
 from numcodecs.abc import Codec
 

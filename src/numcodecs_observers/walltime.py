@@ -6,8 +6,9 @@ __all__ = ["WalltimeObserver"]
 
 import time
 from collections import defaultdict
-from collections.abc import Buffer, Mapping
+from collections.abc import Mapping
 from typing import Callable, Optional
+from typing_extensions import Buffer  # MSPV 3.12
 from types import MappingProxyType
 
 from numcodecs.abc import Codec
