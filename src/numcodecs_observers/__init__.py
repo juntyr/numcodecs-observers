@@ -15,12 +15,12 @@ __all__ = ["observe"]
 
 from collections.abc import Sequence
 from contextlib import contextmanager
-from typing import Any, Optional, Callable
-from typing_extensions import Buffer  # MSPV 3.12
+from typing import Any, Callable, Optional
 
 import numcodecs_combinators
 from numcodecs.abc import Codec
 from numcodecs_combinators.abc import CodecCombinatorMixin
+from typing_extensions import Buffer  # MSPV 3.12
 
 from . import abc as abc
 from . import bytesize as bytesize
@@ -55,12 +55,17 @@ def observe(codec: Codec, observers: Sequence[abc.CodecObserver]):
 
 
 class _ObservingCodec(Codec, CodecCombinatorMixin):
+    __slots__: tuple[str, ...] = ("_codec", "_observers")
     _codec: Codec
     _observers: tuple[abc.CodecObserver, ...]
 
     def __init__(self, codec: Codec, observers: Sequence[abc.CodecObserver]):
         self._codec = codec
         self._observers = tuple(observers)
+
+    @property
+    def codec_id(self) -> None | str:  # type: ignore
+        return self._codec.codec_id
 
     def encode(self, buf: Buffer) -> Buffer:
         observers = [
@@ -87,8 +92,18 @@ class _ObservingCodec(Codec, CodecCombinatorMixin):
 
         return decoded
 
+    def get_config(self) -> dict:
+        return self._codec.get_config()
+
+    @classmethod
+    def from_config(cls, config):
+        raise NotImplementedError()
+
     def map(self, mapper: Callable[[Codec], Codec]) -> "_ObservingCodec":
         return _ObservingCodec(mapper(self._codec), self._observers)
+
+    def __repr__(self) -> str:
+        return repr(self._codec)
 
     def __getattr__(self, name: str) -> Any:
         return getattr(self._codec, name)

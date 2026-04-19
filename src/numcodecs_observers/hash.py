@@ -4,11 +4,11 @@ This module defines the [`HashableCodec`][numcodecs_observers.hash.HashableCodec
 
 __all__ = ["HashableCodec"]
 
-from typing import Any, Optional, Callable
-from typing_extensions import Buffer  # MSPV 3.12
+from typing import Any, Callable, Optional
 
 from numcodecs.abc import Codec
 from numcodecs_combinators.abc import CodecCombinatorMixin
+from typing_extensions import Buffer  # MSPV 3.12
 
 
 class HashableCodec(Codec, CodecCombinatorMixin):
@@ -20,17 +20,29 @@ class HashableCodec(Codec, CodecCombinatorMixin):
     [`__eq__`][object.__eq__] methods to use the codec instance's [`id`][id].
     """
 
+    __slots__: tuple[str, ...] = ("codec",)
     codec: Codec
     """ The wrapped codec. """
 
     def __init__(self, codec: Codec):
         self.codec = codec
 
+    @property
+    def codec_id(self) -> None | str:  # type: ignore
+        return self.codec.codec_id
+
     def encode(self, buf: Buffer) -> Buffer:
         return self.codec.encode(buf)
 
     def decode(self, buf: Buffer, out: Optional[Buffer] = None) -> Buffer:
         return self.codec.decode(buf, out=out)
+
+    def get_config(self) -> dict:
+        return self.codec.get_config()
+
+    @classmethod
+    def from_config(cls, config):
+        raise NotImplementedError()
 
     def map(self, mapper: Callable[[Codec], Codec]) -> Codec:
         # Explicitly don't wrap the mapped inner codec with HashableCodec, as

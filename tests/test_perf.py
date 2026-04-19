@@ -1,7 +1,8 @@
-import numcodecs_combinators
-import numcodecs_observers
 import numcodecs
+import numcodecs_combinators
 import numpy as np
+
+import numcodecs_observers
 
 
 def test_perf():
@@ -21,3 +22,19 @@ def test_perf():
     print(nbytes.decode_sizes)
     print(timing.encode_times)
     print(timing.decode_times)
+
+
+def test_observing_wrap():
+    codec = numcodecs.Zlib(level=7)
+
+    with numcodecs_observers.observe(codec, []) as codec_:
+        assert codec_.codec_id == codec.codec_id
+        assert str(codec_.get_config()) == str(codec.get_config())
+
+
+def test_hashable_wrap():
+    codec = numcodecs.Zlib(level=7)
+    codec_ = numcodecs_observers.hash.HashableCodec(codec)
+
+    assert codec_.codec_id == codec.codec_id
+    assert str(codec_.get_config()) == str(codec.get_config())
